@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>EVO2.0</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EVO - WhatsApp Clone</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="theme-color" content="#00a884">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+    <div id="app">
+        <!-- Splash Screen -->
+        <div id="splashScreen" class="splash-screen">
+            <div class="splash-content">
+                <div class="splash-logo">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>EVO</span>
+                </div>
+                <div class="splash-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Auth Container -->
+        <div id="authContainer" class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>EVO</span>
+                </div>
+                <p>Connect with friends and family</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">LOGIN</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">REGISTER</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <div class="remember-forgot">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" onclick="showForgotPassword()">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="auth-btn">LOG IN</button>
+                </form>
+                <p class="auth-footer">Don't have an account? <a href="#" onclick="switchAuthTab('register')">Sign up</a></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form">
+                <form onsubmit="handleRegister(event)">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="regFullName" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="regEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="regPhone" placeholder="Phone Number" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regPassword" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="profile-pic-upload" onclick="triggerFileUpload()">
+                        <img id="profilePreview" src="https://via.placeholder.com/100" alt="Profile">
+                        <i class="fas fa-camera"></i>
+                        <span>Add profile photo</span>
+                    </div>
+                    <input type="file" id="regProfilePic" accept="image/*" style="display: none;" onchange="previewProfilePic(event)">
+                    <button type="submit" class="auth-btn">SIGN UP</button>
+                </form>
+                <p class="auth-footer">Already have an account? <a href="#" onclick="switchAuthTab('login')">Log in</a></p>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainContainer" class="main-container" style="display: none;">
+            <!-- Main Tab Bar -->
+            <div class="tab-bar">
+                <div class="tab" onclick="switchMainTab('chats')">
+                    <i class="fas fa-comment"></i>
+                    <span>CHATS</span>
+                </div>
+                <div class="tab" onclick="switchMainTab('status')">
+                    <i class="fas fa-circle"></i>
+                    <span>STATUS</span>
+                </div>
+                <div class="tab" onclick="switchMainTab('calls')">
+                    <i class="fas fa-phone"></i>
+                    <span>CALLS</span>
+                </div>
+                <div class="tab" onclick="switchMainTab('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>SETTINGS</span>
+                </div>
+            </div>
+
+            <!-- CHATS VIEW -->
+            <div id="chatsView" class="view active">
+                <div class="view-header">
+                    <h2>Chats</h2>
+                    <div class="header-actions">
+                        <i class="fas fa-search" onclick="showSearch('chats')"></i>
+                        <i class="fas fa-ellipsis-v" onclick="showChatMenu()"></i>
+                    </div>
+                </div>
+                
+                <div class="archive-section" onclick="showArchivedChats()">
+                    <i class="fas fa-archive"></i>
+                    <span>Archived</span>
+                    <span class="archive-count" id="archiveCount">0</span>
+                </div>
+                
+                <div id="chatsList" class="chats-list"></div>
+            </div>
+
+            <!-- STATUS VIEW -->
+            <div id="statusView" class="view">
+                <div class="view-header">
+                    <h2>Status</h2>
+                    <div class="header-actions">
+                        <i class="fas fa-camera" onclick="showCamera()"></i>
+                        <i class="fas fa-ellipsis-v" onclick="showStatusMenu()"></i>
+                    </div>
+                </div>
+                
+                <div class="status-section">
+                    <div class="my-status" onclick="showMyStatusOptions()">
+                        <div class="my-status-avatar">
+                            <img id="myStatusPic" src="https://via.placeholder.com/50" alt="My Status">
+                            <div class="status-circle"></div>
+                        </div>
+                        <div class="my-status-info">
+                            <h4>My status</h4>
+                            <p id="myStatusText">Tap to add status update</p>
+                        </div>
+                        <i class="fas fa-ellipsis-h" onclick="showMyStatusMenu(event)"></i>
+                    </div>
+                    
+                    <h3 class="status-section-title">Recent updates</h3>
+                    <div id="statusList" class="status-list"></div>
+                    
+                    <h3 class="status-section-title">Viewed updates</h3>
+                    <div id="viewedStatusList" class="status-list"></div>
+                </div>
+            </div>
+
+            <!-- CALLS VIEW -->
+            <div id="callsView" class="view">
+                <div class="view-header">
+                    <h2>Calls</h2>
+                    <div class="header-actions">
+                        <i class="fas fa-phone-alt" onclick="startNewCall()"></i>
+                        <i class="fas fa-ellipsis-v" onclick="showCallMenu()"></i>
+                    </div>
+                </div>
+                
+                <div class="call-links-section">
+                    <a href="#" onclick="createCallLink()">Create call link</a>
+                </div>
+                
+                <div id="callsList" class="calls-list"></div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="settingsView" class="view">
+                <div class="view-header">
+                    <h2>Settings</h2>
+                </div>
+                
+                <div class="settings-profile" onclick="showProfile()">
+                    <img id="settingsProfilePic" src="https://via.placeholder.com/60" alt="Profile">
+                    <div class="settings-profile-info">
+                        <h3 id="settingsProfileName"></h3>
+                        <p id="settingsProfileAbout"></p>
+                    </div>
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                
+                <div class="settings-menu">
+                    <div class="settings-item" onclick="showSettingsPage('account')">
+                        <i class="fas fa-key"></i>
+                        <span>Account</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="showSettingsPage('privacy')">
+                        <i class="fas fa-lock"></i>
+                        <span>Privacy</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="showSettingsPage('chats')">
+                        <i class="fas fa-comment"></i>
+                        <span>Chats</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="showSettingsPage('notifications')">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="showSettingsPage('storage')">
+                        <i class="fas fa-database"></i>
+                        <span>Storage and data</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="showSettingsPage('help')">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="showSettingsPage('invite')">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Invite a friend</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="settings-footer">
+                    <p>EVO v1.0.0</p>
+                </div>
+            </div>
+
+            <!-- CHAT VIEW -->
+            <div id="chatView" class="chat-view">
+                <div class="chat-header">
+                    <i class="fas fa-arrow-left" onclick="closeChat()"></i>
+                    <div class="chat-header-info" onclick="showContactInfo()">
+                        <img id="chatPartnerPic" src="" alt="">
+                        <div>
+                            <h3 id="chatPartnerName"></h3>
+                            <span id="chatPartnerStatus" class="status-text">last seen recently</span>
+                        </div>
+                    </div>
+                    <div class="chat-header-actions">
+                        <i class="fas fa-video" onclick="startVideoCall()"></i>
+                        <i class="fas fa-phone" onclick="startAudioCall()"></i>
+                        <i class="fas fa-ellipsis-v" onclick="showChatOptions()"></i>
+                    </div>
+                </div>
+
+                <div id="messagesContainer" class="messages-container"></div>
+
+                <div class="message-input-area">
+                    <div class="message-input-container">
+                        <i class="fas fa-plus-circle" onclick="showAttachmentMenu()"></i>
+                        <i class="fas fa-camera" onclick="openCamera()"></i>
+                        <i class="fas fa-image" onclick="openGallery()"></i>
+                        <input type="text" id="messageText" placeholder="Type a message" onkeypress="handleKeyPress(event)">
+                        <i class="fas fa-smile" onclick="showEmojiPicker()"></i>
+                        <i class="fas fa-microphone" onclick="startVoiceRecording()"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS VIEWER -->
+            <div id="statusViewer" class="status-viewer" style="display: none;">
+                <div class="status-viewer-header">
+                    <i class="fas fa-arrow-left" onclick="closeStatusViewer()"></i>
+                    <div class="status-viewer-info">
+                        <img id="statusUserPic" src="" alt="">
+                        <div>
+                            <h4 id="statusUserName"></h4>
+                            <span id="statusTime"></span>
+                        </div>
+                    </div>
+                    <i class="fas fa-ellipsis-v" onclick="showStatusOptions()"></i>
+                </div>
+                
+                <div class="status-progress-container" id="statusProgress"></div>
+                
+                <div id="statusDisplay" class="status-display"></div>
+                
+                <div class="status-actions">
+                    <i class="fas fa-reply" onclick="replyToStatus()"></i>
+                    <i class="fas fa-heart" onclick="likeStatus()"></i>
+                    <i class="fas fa-share" onclick="shareStatus()"></i>
+                </div>
+            </div>
+
+            <!-- CONTACT INFO SHEET -->
+            <div id="contactInfoSheet" class="bottom-sheet" style="display: none;">
+                <div class="sheet-handle"></div>
+                <div class="sheet-content">
+                    <div class="contact-info-header">
+                        <img id="contactInfoPic" src="" alt="">
+                        <h3 id="contactInfoName"></h3>
+                        <p id="contactInfoAbout"></p>
+                    </div>
+                    
+                    <div class="contact-info-actions">
+                        <div class="contact-action" onclick="startAudioCall()">
+                            <i class="fas fa-phone"></i>
+                            <span>Audio</span>
+                        </div>
+                        <div class="contact-action" onclick="startVideoCall()">
+                            <i class="fas fa-video"></i>
+                            <span>Video</span>
+                        </div>
+                        <div class="contact-action" onclick="searchChat()">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-details">
+                        <div class="detail-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <div>
+                                <span class="detail-label">Phone</span>
+                                <span class="detail-value" id="contactInfoPhone"></span>
+                            </div>
+                            <i class="fas fa-copy" onclick="copyPhoneNumber()"></i>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="far fa-clock"></i>
+                            <div>
+                                <span class="detail-label">Last seen</span>
+                                <span class="detail-value" id="contactInfoLastSeen"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <span class="detail-label">Encryption</span>
+                                <span class="detail-value">Messages are end-to-end encrypted</span>
+                            </div>
+                            <i class="fas fa-chevron-right" onclick="showEncryptionInfo()"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-options">
+                        <div class="option-item" onclick="blockContact()">
+                            <i class="fas fa-ban"></i>
+                            <span>Block contact</span>
+                        </div>
+                        <div class="option-item" onclick="reportContact()">
+                            <i class="fas fa-flag"></i>
+                            <span>Report contact</span>
+                        </div>
+                        <div class="option-item" onclick="deleteChat()">
+                            <i class="fas fa-trash"></i>
+                            <span>Delete chat</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW CHAT SHEET -->
+            <div id="newChatSheet" class="bottom-sheet" style="display: none;">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                    <h3>New chat</h3>
+                    <i class="fas fa-times" onclick="closeSheet('newChatSheet')"></i>
+                </div>
+                <div class="sheet-content">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="newChatSearch" placeholder="Search contacts" oninput="searchNewChat()">
+                    </div>
+                    
+                    <div class="contact-actions">
+                        <div class="contact-action-item" onclick="newGroup()">
+                            <i class="fas fa-users"></i>
+                            <span>New group</span>
+                        </div>
+                        <div class="contact-action-item" onclick="newContact()">
+                            <i class="fas fa-user-plus"></i>
+                            <span>New contact</span>
+                        </div>
+                        <div class="contact-action-item" onclick="newCommunity()">
+                            <i class="fas fa-globe"></i>
+                            <span>New community</span>
+                        </div>
+                    </div>
+                    
+                    <h4>Contacts on EVO</h4>
+                    <div id="newChatUsersList" class="users-list"></div>
+                </div>
+            </div>
+
+            <!-- SETTINGS - ACCOUNT PAGE -->
+            <div id="accountSettingsPage" class="settings-page" style="display: none;">
+                <div class="settings-page-header">
+                    <i class="fas fa-arrow-left" onclick="closeSettingsPage()"></i>
+                    <h3>Account</h3>
+                </div>
+                
+                <div class="settings-page-content">
+                    <div class="settings-option" onclick="changePrivacy()">
+                        <span>Privacy</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option" onclick="changeSecurity()">
+                        <span>Security</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option" onclick="twoStepVerification()">
+                        <span>Two-step verification</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option" onclick="changeNumber()">
+                        <span>Change number</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option" onclick="requestAccountInfo()">
+                        <span>Request account info</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option" onclick="deleteAccount()">
+                        <span style="color: #f44336;">Delete my account</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS - PRIVACY PAGE -->
+            <div id="privacySettingsPage" class="settings-page" style="display: none;">
+                <div class="settings-page-header">
+                    <i class="fas fa-arrow-left" onclick="closeSettingsPage()"></i>
+                    <h3>Privacy</h3>
+                </div>
+                
+                <div class="settings-page-content">
+                    <div class="settings-section">
+                        <h4>Who can see my personal info</h4>
+                        
+                        <div class="settings-option" onclick="changeLastSeen()">
+                            <span>Last seen & online</span>
+                            <span class="option-value" id="lastSeenSetting">Everyone</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeProfilePhoto()">
+                            <span>Profile photo</span>
+                            <span class="option-value" id="profilePhotoSetting">Everyone</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeAbout()">
+                            <span>About</span>
+                            <span class="option-value" id="aboutSetting">Everyone</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeStatus()">
+                            <span>Status</span>
+                            <span class="option-value" id="statusSetting">My contacts</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Read receipts</h4>
+                        <div class="settings-option toggle-option">
+                            <span>Read receipts</span>
+                            <label class="switch">
+                                <input type="checkbox" id="readReceiptsToggle" onchange="toggleReadReceipts()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <p class="option-description">If turned off, you won't send or receive read receipts</p>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Group privacy</h4>
+                        <div class="settings-option" onclick="changeGroupPrivacy()">
+                            <span>Who can add me to groups</span>
+                            <span class="option-value" id="groupPrivacySetting">Everyone</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Blocked contacts</h4>
+                        <div class="settings-option" onclick="showBlockedContacts()">
+                            <span>Blocked contacts</span>
+                            <span class="option-value" id="blockedCount">0</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Disappearing messages</h4>
+                        <div class="settings-option" onclick="changeDisappearingMessages()">
+                            <span>Default message timer</span>
+                            <span class="option-value" id="disappearingTimer">Off</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS - CHATS PAGE -->
+            <div id="chatsSettingsPage" class="settings-page" style="display: none;">
+                <div class="settings-page-header">
+                    <i class="fas fa-arrow-left" onclick="closeSettingsPage()"></i>
+                    <h3>Chats</h3>
+                </div>
+                
+                <div class="settings-page-content">
+                    <div class="settings-section">
+                        <h4>Chat settings</h4>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Enter key sends</span>
+                            <label class="switch">
+                                <input type="checkbox" id="enterSendsToggle" onchange="toggleEnterSends()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Media visibility</span>
+                            <label class="switch">
+                                <input type="checkbox" id="mediaVisibilityToggle" onchange="toggleMediaVisibility()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeFontSize()">
+                            <span>Font size</span>
+                            <span class="option-value" id="fontSizeSetting">Medium</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeWallpaper()">
+                            <span>Wallpaper</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Chat backup</h4>
+                        <div class="settings-option" onclick="backupChats()">
+                            <span>Back up chats</span>
+                            <span class="option-value" id="lastBackup">Never</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Chat history</h4>
+                        <div class="settings-option" onclick="exportChats()">
+                            <span>Export chats</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option" onclick="clearAllChats()">
+                            <span style="color: #f44336;">Clear all chats</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Archive</h4>
+                        <div class="settings-option toggle-option">
+                            <span>Keep chats archived</span>
+                            <label class="switch">
+                                <input type="checkbox" id="keepArchivedToggle" onchange="toggleKeepArchived()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <p class="option-description">Archived chats will stay archived when you receive a new message</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS - NOTIFICATIONS PAGE -->
+            <div id="notificationsSettingsPage" class="settings-page" style="display: none;">
+                <div class="settings-page-header">
+                    <i class="fas fa-arrow-left" onclick="closeSettingsPage()"></i>
+                    <h3>Notifications</h3>
+                </div>
+                
+                <div class="settings-page-content">
+                    <div class="settings-section">
+                        <h4>Message notifications</h4>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Show notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" id="messageNotificationsToggle" onchange="toggleMessageNotifications()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeNotificationTone()">
+                            <span>Notification tone</span>
+                            <span class="option-value" id="notificationTone">Default</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeNotificationVibrate()">
+                            <span>Vibrate</span>
+                            <span class="option-value" id="notificationVibrate">Default</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Pop-up notification</span>
+                            <label class="switch">
+                                <input type="checkbox" id="popupNotificationToggle" onchange="togglePopupNotification()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Light</span>
+                            <label class="switch">
+                                <input type="checkbox" id="lightToggle" onchange="toggleLight()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Group notifications</h4>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Show notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" id="groupNotificationsToggle" onchange="toggleGroupNotifications()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeGroupNotificationTone()">
+                            <span>Notification tone</span>
+                            <span class="option-value" id="groupNotificationTone">Default</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Call notifications</h4>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Show notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" id="callNotificationsToggle" onchange="toggleCallNotifications()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option" onclick="changeCallTone()">
+                            <span>Ringtone</span>
+                            <span class="option-value" id="callTone">Default</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="settings-option toggle-option">
+                            <span>Vibrate</span>
+                            <label class="switch">
+                                <input type="checkbox" id="callVibrateToggle" onchange="toggleCallVibrate()" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EMOJI PICKER -->
+            <div id="emojiPicker" class="emoji-picker" style="display: none;">
+                <div class="emoji-header">
+                    <span onclick="selectEmojiCategory('recent')">🕒</span>
+                    <span onclick="selectEmojiCategory('smileys')">😊</span>
+                    <span onclick="selectEmojiCategory('people')">👋</span>
+                    <span onclick="selectEmojiCategory('animals')">🐶</span>
+                    <span onclick="selectEmojiCategory('food')">🍔</span>
+                    <span onclick="selectEmojiCategory('activities')">⚽</span>
+                    <span onclick="selectEmojiCategory('travel')">🌍</span>
+                    <span onclick="selectEmojiCategory('objects')">💡</span>
+                </div>
+                <div class="emoji-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search emoji" oninput="searchEmoji()">
+                </div>
+                <div id="emojiGrid" class="emoji-grid"></div>
+            </div>
+
+            <!-- ATTACHMENT MENU -->
+            <div id="attachmentMenu" class="bottom-sheet" style="display: none;">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                    <h3>Attach</h3>
+                    <i class="fas fa-times" onclick="closeSheet('attachmentMenu')"></i>
+                </div>
+                <div class="sheet-content">
+                    <div class="attachment-grid">
+                        <div class="attachment-item" onclick="attachDocument()">
+                            <i class="fas fa-file"></i>
+                            <span>Document</span>
+                        </div>
+                        <div class="attachment-item" onclick="attachCamera()">
+                            <i class="fas fa-camera"></i>
+                            <span>Camera</span>
+                        </div>
+                        <div class="attachment-item" onclick="attachGallery()">
+                            <i class="fas fa-image"></i>
+                            <span>Gallery</span>
+                        </div>
+                        <div class="attachment-item" onclick="attachAudio()">
+                            <i class="fas fa-music"></i>
+                            <span>Audio</span>
+                        </div>
+                        <div class="attachment-item" onclick="attachLocation()">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Location</span>
+                        </div>
+                        <div class="attachment-item" onclick="attachContact()">
+                            <i class="fas fa-address-card"></i>
+                            <span>Contact</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
